@@ -4,8 +4,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/GeertJohan/go.rice"
-	"github.com/sciter-sdk/go-sciter"
+	"github.com/Dadido3/go-sciter"
+	rice "github.com/GeertJohan/go.rice"
 )
 
 var (

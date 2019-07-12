@@ -3,7 +3,7 @@ package window
 import (
 	"runtime"
 
-	"github.com/sciter-sdk/go-sciter"
+	"github.com/Dadido3/go-sciter"
 )
 
 type Window struct {

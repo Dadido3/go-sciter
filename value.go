@@ -96,6 +96,8 @@ func (v *Value) Assign(val interface{}) {
 		v.Assign(int(val.(int32)))
 	case int64:
 		v.Assign(int(val.(int64)))
+	case time.Time:
+		bla, add time
 	case Value:
 		vf := val.(Value)
 		v.Copy(&vf)

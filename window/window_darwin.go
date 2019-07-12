@@ -31,7 +31,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/sciter-sdk/go-sciter"
+	"github.com/Dadido3/go-sciter"
 )
 
 func New(creationFlags sciter.WindowCreationFlag, rect *sciter.Rect) (*Window, error) {
