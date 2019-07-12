@@ -3,6 +3,7 @@ package sciter
 import (
 	"fmt"
 	"runtime"
+	"time"
 )
 
 type NativeFunctor func(args ...*Value) *Value
@@ -40,7 +41,7 @@ func valuePanic(result uint, message ...interface{}) {
 // Only supported basic types: int/bool/string/float/NativeFunctor/Value
 //	 for creating array: a := NewValue(); a.SetIndex(0, 123)|a.Append(123)
 //	 for creating map/object: obj := NewValue(); obj.Set("key", "value")
-// The creating process would call ValueInit/VlaueClear automatically
+// The creating process would call ValueInit/ValueClear automatically
 func NewValue(val ...interface{}) *Value {
 	v := new(Value)
 	v.init()
@@ -66,47 +67,44 @@ func (v *Value) Release() {
 // Assign go value to Sciter Value
 // currently supported go types: bool integer float string and NativeFunctor
 func (v *Value) Assign(val interface{}) {
-	switch val.(type) {
+	switch val := val.(type) {
 	case string:
-		s := val.(string)
-		v.SetString(s)
+		v.SetString(val)
 	case int:
-		i := val.(int)
-		v.SetInt(i)
+		v.SetInt(val)
 	case float64:
-		f := val.(float64)
 		// valueInit(this); valueFloatDataSet(this, v, T_FLOAT, 0)
-		v.SetFloat(f)
+		v.SetFloat(val)
 	case bool:
 		// value( bool v )           { valueInit(this); valueIntDataSet(this, v?1:0, T_BOOL, 0); }
-		i := 0
-		if val.(bool) {
-			i = 1
+		if val {
+			v.SetInt(1)
+		} else {
+			v.SetInt(0)
 		}
-		v.SetInt(i)
 	case float32:
-		v.Assign(float64(val.(float32)))
+		v.Assign(float64(val))
 	case uint:
-		v.Assign(int(val.(uint)))
+		v.Assign(int(val))
 	case uint32:
-		v.Assign(int(val.(uint32)))
+		v.Assign(int(val))
 	case uint64:
-		v.Assign(int(val.(uint64)))
+		v.Assign(int(val))
 	case int32:
-		v.Assign(int(val.(int32)))
+		v.Assign(int(val))
 	case int64:
-		v.Assign(int(val.(int64)))
+		v.Assign(int(val))
 	case time.Time:
-		bla, add time
+		v.SetTime(val)
 	case Value:
-		vf := val.(Value)
+		vf := val
 		v.Copy(&vf)
 	case *Value:
-		v.Copy(val.(*Value))
+		v.Copy(val)
 	case NativeFunctor:
-		v.SetNativeFunctor(val.(NativeFunctor))
+		v.SetNativeFunctor(val)
 	case func(args ...*Value) *Value:
-		v.SetNativeFunctor((NativeFunctor)(val.(func(args ...*Value) *Value)))
+		v.SetNativeFunctor((NativeFunctor)(val))
 	default:
 		nf, ok := val.(NativeFunctor)
 		if ok {

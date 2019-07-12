@@ -40,6 +40,7 @@ import (
 	"log"
 	"runtime"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -2058,6 +2059,22 @@ func (pdst *Value) SetBool(b bool) error {
 	cpdst := (*C.VALUE)(unsafe.Pointer(pdst))
 	// args
 	return wrapValueResult(VALUE_RESULT(C.ValueIntDataSet(cpdst, C.INT(data), T_BOOL, 0)), "ValueIntDataSet")
+}
+
+func (pdst *Value) Time() (time.Time, error) {
+	cpdst := (*C.VALUE)(unsafe.Pointer(pdst))
+	var data int64 = 0
+	pData := (*C.INT64)(unsafe.Pointer(&data))
+	ret := VALUE_RESULT(C.ValueInt64Data(cpdst, pData))
+	if ret != HV_OK {
+		return time.Time{}, wrapValueResult(ret, "ValueInt64Data")
+	}
+
+	return FiletimeToTime(data), nil
+}
+
+func (pdst *Value) SetTime(t time.Time) error {
+	return pdst.SetInt64(TimeToFiletime(t), T_DATE)
 }
 
 // UINT  ValueInt64Data ( const VALUE* pval, INT64* pData ) ;//{ return SAPI()->ValueInt64Data ( pval,pData ); }

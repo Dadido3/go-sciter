@@ -7,6 +7,7 @@ package sciter
 import "C"
 import (
 	"syscall"
+	"time"
 	"unicode/utf16"
 	"unsafe"
 )
@@ -77,4 +78,24 @@ func ByteCPtrToBytes(bp C.LPCBYTE, size C.UINT) []byte {
 func BytePtrToBytes(bp *byte, size uint) []byte {
 	bs := C.GoBytes(unsafe.Pointer(bp), C.INT(size))
 	return bs
+}
+
+func FiletimeToTime(filetime int64) time.Time {
+	// 100-nanosecond intervals since January 1, 1601
+	nsec := filetime
+	// change starting time to the Epoch (00:00:00 UTC, January 1, 1970)
+	nsec -= 116444736000000000
+	// convert into nanoseconds
+	nsec *= 100
+	return time.Unix(0, nsec)
+}
+
+func TimeToFiletime(t time.Time) int64 {
+	filetime := t.UnixNano()
+	// convert into 100-nanosecond
+	filetime /= 100
+	// change starting time to January 1, 1601
+	filetime += 116444736000000000
+	// split into high / low
+	return filetime
 }
