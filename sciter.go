@@ -2074,7 +2074,9 @@ func (pdst *Value) Time() (time.Time, error) {
 }
 
 func (pdst *Value) SetTime(t time.Time) error {
-	return pdst.SetInt64(TimeToFiletime(t), T_DATE)
+	cpdst := (*C.VALUE)(unsafe.Pointer(pdst))
+
+	return wrapValueResult(VALUE_RESULT(C.ValueInt64DataSet(cpdst, C.INT64(TimeToFiletime(t)), C.UINT(T_DATE), 1)), "ValueInt64DataSet")
 }
 
 // UINT  ValueInt64Data ( const VALUE* pval, INT64* pData ) ;//{ return SAPI()->ValueInt64Data ( pval,pData ); }
