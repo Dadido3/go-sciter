@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"path/filepath"
 
 	"github.com/Dadido3/go-sciter"
 	"github.com/Dadido3/go-sciter/window"
@@ -12,8 +13,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// log.Printf("handle: %v", w.Handle)
-	w.LoadFile("simple.html")
+	fullpath, err := filepath.Abs("simple.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.LoadFile(fullpath)
 	w.SetTitle("Example")
 	w.Show()
 	w.Run()
